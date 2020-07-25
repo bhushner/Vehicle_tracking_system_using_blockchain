@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <form class="form-inline">
+            <button id="wallet1" class="btn primary" type="button"><a href="/wallet">Wallet</a></button>
+            <button id="transaction" class="btn primary" type="button"><a href="/transaction">Tansactions</a></button>
+            <button id="mine" class="btn primary" type="button"><a href="{{node_address}}/mine"
+                    target="myIframe">Mine</a></button>
+            <button id="getchain" class="btn primary" type="button"><a href="/get_chain">Chain</a></button>
+            <button id="vehical_track" class="btn primary" type="button"><a href="/track">Vehical Tracking</a></button>
+
+        </form>
+    </nav><br><br>
+    <center>
+        <div>
+            <label for="address"><b>Enter Number</b></label>
+            <input type="text" id="track_number" placeholder=" Ex : MH-XX-AB-1234">
+            <!-- <input type="button" color="primary" id="track" class="btn primary" type="button">Track</button> -->
+            <input type="button" id="track" class="btn btn-primary btn-lg" value="Track">
+        </div><br>
+    </center>
+    <br><br>
+    <div id="result">
+
+
+    </div>
+    <div style="margin: 20px;">
+
+
+        <script src="/static/vendor/jquery/jquery.min.js"></script>
+        <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script>
+
+            $(function () {
+                $('#track').click(function () {
+
+                    $.ajax({
+                        url: 'http://127.0.0.1:8000/chain',
+                        type: 'GET',
+                        success: function (response) {
+                            var data = JSON.parse(response);
+                            // console.log('data', data['chain']);
+                            var flag = 0;
+                            var reg_number = $('#track_number').val();
+                            console.log('reg_number', reg_number);
+                            for (i = 1; i < data['chain'].length; i++) {
+                                // console.log('blocks', data['chain'][i]['transactions'][0]['v_type']);
+                                if (data['chain'][i]['transactions'][0]['v_type'] != reg_number) {
+                                    flag = 1;
+                                    break;
+                                }
+                            }
+
+                            // var s = new Date(1504095567183).toLocaleTimeString("IST")
+                            $("#result").empty();
+                            if (flag == 1 && i == 1) {
+                                console.log("vehical not present");
+                                $('#result').append('<center><table style="width:80%">\
+                                This vehical is not present\
+                                </table></center>')
+
+                            }
+                            else if (flag == 1) {
+                                dateObj = new Date(data['chain'][i - 1]['transactions'][0]['timestamp'] * 1000);
+                                utcString = dateObj.toUTCString();
+                                time = utcString.slice(-11, -4);
+
+                                console.log('lossed', data['chain'][i - 1]['transactions'][0]);
+                                $('#result').append(
+                                    '<center>\
+                                    <table  class="table table-striped table-bordered" style="width:80%">\
+                                        <thead class="thead-dark">\
+                                            <tr>\
+                                                <th scope="col">Vehicle Number</th>\
+                                                <th scope="col">Model Number</th>\
+                                                <th scope="col">Current Vehicle Owner</th>\
+                                                <th scope="col">Price</th>\
+                                                <th scope="col">Time</th>\
+                                            </tr>\
+                                        </thead>\
+                                        <tbody>\
+                                            <tr>\
+                                                <td>' + data['chain'][i - 1]['transactions'][0]['v_type'] + '</td>\
+                                                <td>' + data['chain'][i - 1]['transactions'][0]['model'] + '</td>\
+                                                <td>' + data['chain'][i - 1]['transactions'][0]['author'] + '</td>\
+                                                <td> ' + data['chain'][i - 1]['transactions'][0]['amount'] + '</td>\
+                                                <td> ' + dateObj + '</td>\
+                                            </tr>\
+                                        </tbody>\
+                                    </table></center>'
+
+                                )
+                            }
+                            else {
+                                dateObj = new Date(data['chain'][i - 1]['transactions'][0]['timestamp'] * 1000);
+                                utcString = dateObj.toUTCString();
+                                time = utcString.slice(-11, -4);
+
+                                console.log('present', data['chain'][i - 1]['transactions'][0]);
+                                $('#result').append('<center>\
+                                    <table  class="table table-striped table-bordered" style="width:80%">\
+                                        <thead class="thead-dark">\
+                                            <tr>\
+                                                <th scope="col">Vehicle Number</th>\
+                                                <th scope="col">Model Number</th>\
+                                                <th scope="col">Current Vehicle Owner</th>\
+                                                <th scope="col">Price</th>\
+                                                <th scope="col">Time</th>\
+                                            </tr>\
+                                        </thead>\
+                                        <tbody>\
+                                            <tr>\
+                                                <td>' + data['chain'][i - 1]['transactions'][0]['v_type'] + '</td>\
+                                                <td>' + data['chain'][i - 1]['transactions'][0]['model'] + '</td>\
+                                                <td>' + data['chain'][i - 1]['transactions'][0]['author'] + '</td>\
+                                                <td> ' + data['chain'][i - 1]['transactions'][0]['amount'] + '</td>\
+                                                <td> ' + dateObj + '</td>\
+                                            </tr>\
+                                        </tbody>\
+                                    </table></center>'
+                                )
+                            }
+
+
+                            // else if (flag == 1) {
+                            //     dateObj = new Date(data['chain'][i - 1]['transactions'][0]['timestamp'] * 1000);
+                            //     utcString = dateObj.toUTCString();
+                            //     time = utcString.slice(-11, -4);
+
+                            //     console.log('lossed', data['chain'][i - 1]['transactions'][0]);
+                            //     $('#result').append('<center>\
+                            //     <table border="1">\
+                            //     <tr><th>Vehical Number  </th><td> ' + data['chain'][i - 1]['transactions'][0]['v_type'] + '</td></tr>\
+                            //     <tr><th>Vehical Model  </th><td> ' + data['chain'][i - 1]['transactions'][0]['model'] + '</td></tr>\
+                            //     <tr><th>Last Found At  </th><td> ' + data['chain'][i - 1]['transactions'][0]['author'] + '</td></tr>\
+                            //     <tr><th>Price at Above Owner  </th><td> ' + data['chain'][i - 1]['transactions'][0]['amount'] + '</td></tr>\
+                            //     <tr><th>Time  </th><td> ' + dateObj + '</td></tr></table></center>')
+                            // }
+                            // else {
+                            //     dateObj = new Date(data['chain'][i - 1]['transactions'][0]['timestamp'] * 1000);
+                            //     utcString = dateObj.toUTCString();
+                            //     time = utcString.slice(-11, -4);
+
+                            //     console.log('present', data['chain'][i - 1]['transactions'][0]);
+                            //     $('#result').append('<center>\
+                            //     <table border="1">\
+                            //     <tr><th>Vehical Number  </th><td> ' + data['chain'][i - 1]['transactions'][0]['v_type'] + '</td></tr>\
+                            //     <tr><th>Vehical model  </th><td> ' + data['chain'][i - 1]['transactions'][0]['model'] + '</td></tr>\
+                            //     <tr><th>Last Found At  </th><td> ' + data['chain'][i - 1]['transactions'][0]['author'] + '</td></tr>\
+                            //     <tr><th>Price at Above Owner  </th><td> ' + data['chain'][i - 1]['transactions'][0]['amount'] + '</td></tr>\
+                            //     <tr><th>Time  </th><td> ' + dateObj + '</td></tr></table></center>')
+                            // }
+
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    });
+                });
+            })
+
+
+        </script>
+        <style>
+            .post_box {
+                background: #fff;
+                padding: 12px 0px 0px 12px;
+                margin-top: 0px;
+                margin-bottom: 8px;
+                border-top: 1px solid #f0f0f0;
+            }
+
+            .post_box-header {
+                padding-bottom: 12px;
+            }
+
+            .post_box-avatar {
+                width: 38px;
+                height: 38px;
+                border-radius: 80%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: white;
+                font-size: 22px;
+                float: left;
+                margin-right: 16px;
+                border: 1px solid #fff;
+                box-shadow: 0px 0px 0px 2px #f00;
+            }
+
+            .post_box-avatar::after {
+                content: "";
+                display: block;
+            }
+
+            .post_box-name {
+                font-weight: bold;
+            }
+
+            .post_box-subtitle {
+                color: #777;
+            }
+
+            .post_box-body {
+                margin-top: 16px;
+                margin-bottom: 8px;
+            }
+
+            .post_box-options {
+                float: right;
+            }
+
+            .option-btn {
+                background: #f8f8f8;
+                border: none;
+                color: #2c3e50;
+                padding: 7px;
+                cursor: pointer;
+                font-size: 14px;
+                margin-left: 2px;
+                margin-right: 2px;
+                outline: none;
+                height: 42px;
+            }
+        </style>
+    </div>
+    {% endblock %}
+</body>
+<style>
+    textarea {
+        width: 80%;
+    }
+</style>

@@ -1,0 +1,122 @@
+<html>
+
+<head>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+		integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+		integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+		crossorigin="anonymous"></script>
+</head>
+
+<body>
+	<div style="margin: 20px;">
+		<center>
+			<h3>Chain</h3>
+		</center>
+		<br>
+	</div>
+	<div style="margin: 20px;">
+		<div class="post_box">
+			<table id="example" class="table table-striped table-bordered" style="width:100%">
+				<thead>
+					<tr>
+						<th>Block.No</th>
+						<th>Seller</th>
+						<th>Buyer</th>
+						<th>Time</th>
+						<th>Model Name</th>
+						<th>Vehicle Number</th>
+						<th>Price</th>
+					</tr>
+				</thead>
+				{% for post in posts %}
+				<tbody>
+					<tr>
+						<td>{{post.index}}</td>
+						<td>{{post.author}}</td>
+						<td>{{post.buyer}}</td>
+						<td>{{post.timestamp}}</td>
+						<td>{{post.model}}</td>
+						<td>{{post.v_type}}</td>
+						<td>{{post.amount}}</td>
+					</tr>
+				</tbody>
+				{% endfor %}
+			</table>
+		</div>
+
+		<style>
+			.post_box {
+				background: #fff;
+				padding: 12px 0px 0px 12px;
+				margin-top: 0px;
+				margin-bottom: 8px;
+				border-top: 1px solid #f0f0f0;
+			}
+
+			.post_box-header {
+				padding-bottom: 12px;
+			}
+
+			.post_box-avatar {
+				width: 38px;
+				height: 38px;
+				border-radius: 50%;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				color: white;
+				font-size: 22px;
+				float: left;
+				margin-right: 16px;
+				border: 1px solid #fff;
+				box-shadow: 0px 0px 0px 2px #f00;
+			}
+
+			.post_box-avatar::after {
+				content: "";
+				display: block;
+			}
+
+			.post_box-name {
+				font-weight: bold;
+			}
+
+			.post_box-subtitle {
+				color: #777;
+			}
+
+			.post_box-body {
+				margin-top: 16px;
+				margin-bottom: 8px;
+			}
+
+			.post_box-options {
+				float: right;
+			}
+
+			.option-btn {
+				background: #f8f8f8;
+				border: none;
+				color: #2c3e50;
+				padding: 7px;
+				cursor: pointer;
+				font-size: 14px;
+				margin-left: 2px;
+				margin-right: 2px;
+				outline: none;
+				height: 42px;
+			}
+		</style>
+	</div>
+
+
+</body>
+
+</html>
